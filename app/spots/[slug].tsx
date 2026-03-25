@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
-import { Link, useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useRef } from "react";
 import {
   ActivityIndicator,
@@ -17,6 +17,7 @@ import { fetchSpotBySlug } from "../../src/lib/api";
 
 export default function SpotDetail() {
   const params = useLocalSearchParams();
+  const router = useRouter();
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
 
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -53,9 +54,11 @@ export default function SpotDetail() {
     <View style={styles.container}>
       {/* Floating Header Buttons */}
       <View style={styles.headerButtons}>
-        <TouchableOpacity style={styles.headerButton}>
+
+        <TouchableOpacity style={styles.headerButton} onPress={() => router.back()}>
           <Text style={styles.headerButtonText}>←</Text>
         </TouchableOpacity>
+
 
         <TouchableOpacity style={styles.headerButton}>
           <Text style={styles.headerButtonText}>♡</Text>
