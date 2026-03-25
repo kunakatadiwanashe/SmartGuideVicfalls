@@ -64,7 +64,7 @@ export default function ExploreScreen() {
     <Link href={`/spots/${item.id}`} asChild>
       <TouchableOpacity style={styles.card}>
         <ImageBackground
-          source={{ uri: item.image }}
+          source={item.image }
           style={styles.cardImage}
           imageStyle={{ borderRadius: 20 }}
         >
@@ -120,7 +120,7 @@ export default function ExploreScreen() {
 
       {/* --- SECTION HEADER --- */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Untamed Nature</Text>
+        <Text style={styles.sectionTitle}>Explore Nature</Text>
       </View>
     </>
   );

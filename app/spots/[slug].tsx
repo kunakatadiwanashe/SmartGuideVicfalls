@@ -1,17 +1,18 @@
 "use client";
 
-import { useRef } from "react";
-import { useLocalSearchParams, Link } from "expo-router";
-import {
-  View,
-  Text,
-  Image,
-  ActivityIndicator,
-  TouchableOpacity,
-  Animated,
-} from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { useQuery } from "@tanstack/react-query";
+import { LinearGradient } from "expo-linear-gradient";
+import { Link, useLocalSearchParams } from "expo-router";
+import { useRef } from "react";
+import {
+  ActivityIndicator,
+  Animated,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { fetchSpotBySlug } from "../../src/lib/api";
 
 export default function SpotDetail() {
@@ -26,25 +27,22 @@ export default function SpotDetail() {
     enabled: !!slug,
   });
 
-  // LOADING
   if (isLoading) {
     return (
-      <View className="flex-1 justify-center items-center bg-black">
+      <View style={styles.centered}>
         <ActivityIndicator size="large" color="#fff" />
       </View>
     );
   }
 
-  // ERROR
   if (isError || !spot) {
     return (
-      <View className="flex-1 justify-center items-center bg-black">
-        <Text className="text-red-400">Failed to load</Text>
+      <View style={styles.centered}>
+        <Text style={styles.errorText}>Failed to load</Text>
       </View>
     );
   }
 
-  // PARALLAX EFFECT
   const imageTranslate = scrollY.interpolate({
     inputRange: [0, 200],
     outputRange: [0, -50],
@@ -52,16 +50,15 @@ export default function SpotDetail() {
   });
 
   return (
-    <View className="flex-1 bg-black">
-
-      {/* FLOATING HEADER BUTTONS */}
-      <View className="absolute top-12 left-4 right-4 z-10 flex-row justify-between">
-        <TouchableOpacity className="bg-black/50 p-3 rounded-full">
-          <Text className="text-white">←</Text>
+    <View style={styles.container}>
+      {/* Floating Header Buttons */}
+      <View style={styles.headerButtons}>
+        <TouchableOpacity style={styles.headerButton}>
+          <Text style={styles.headerButtonText}>←</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity className="bg-black/50 p-3 rounded-full">
-          <Text className="text-white">♡</Text>
+        <TouchableOpacity style={styles.headerButton}>
+          <Text style={styles.headerButtonText}>♡</Text>
         </TouchableOpacity>
       </View>
 
@@ -72,86 +69,63 @@ export default function SpotDetail() {
           { useNativeDriver: true }
         )}
       >
-        {/* HERO IMAGE WITH PARALLAX */}
-        <Animated.View
-          style={{ transform: [{ translateY: imageTranslate }] }}
-        >
+        {/* Hero Image with Parallax */}
+        <Animated.View style={{ transform: [{ translateY: imageTranslate }] }}>
           <Image
-            source={{
-              uri: spot.image || "https://via.placeholder.com/600",
-            }}
-            className="h-96 w-full"
+            source={spot.image}
+            style={styles.heroImage}
+            resizeMode="cover"
           />
-
           <LinearGradient
             colors={["transparent", "rgba(0,0,0,0.95)"]}
-            className="absolute bottom-0 w-full h-48"
+            style={styles.gradientOverlay}
           />
-
-          <View className="absolute bottom-6 left-5 right-5">
-            <Text className="text-white text-3xl font-extrabold">
-              {spot.name}
-            </Text>
-            <Text className="text-gray-300 text-sm mt-1">
-              📍 Tourist Attraction
-            </Text>
+          <View style={styles.heroTextContainer}>
+            <Text style={styles.heroTitle}>{spot.name}</Text>
+            <Text style={styles.heroSubtitle}>📍 Tourist Attraction</Text>
           </View>
         </Animated.View>
 
-        {/* CONTENT */}
-        <View className="bg-black rounded-t-3xl px-5 pt-6 pb-32 space-y-5">
-
-          {/* QUICK INFO */}
-          <View className="flex-row justify-between bg-white/10 p-4 rounded-2xl">
+        {/* Content */}
+        <View style={styles.contentContainer}>
+          {/* Quick Info */}
+          <View style={styles.quickInfo}>
             <View>
-              <Text className="text-gray-400 text-xs">Rating</Text>
-              <Text className="text-white font-bold">⭐ 4.8</Text>
+              <Text style={styles.label}>Rating</Text>
+              <Text style={styles.value}>⭐ 4.8</Text>
             </View>
             <View>
-              <Text className="text-gray-400 text-xs">Distance</Text>
-              <Text className="text-white font-bold">~2.3 km</Text>
+              <Text style={styles.label}>Distance</Text>
+              <Text style={styles.value}>~2.3 km</Text>
             </View>
             <View>
-              <Text className="text-gray-400 text-xs">Open</Text>
-              <Text className="text-green-400 font-bold">Now</Text>
+              <Text style={styles.label}>Open</Text>
+              <Text style={[styles.value, { color: "#22c55e" }]}>Now</Text>
             </View>
           </View>
 
-          {/* ABOUT */}
-          <View className="bg-white/10 p-5 rounded-2xl">
-            <Text className="text-white text-lg font-semibold mb-2">
-              🧭 About
-            </Text>
-            <Text className="text-gray-300 leading-relaxed">
-              {spot.description}
-            </Text>
+          {/* About */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>🧭 About</Text>
+            <Text style={styles.sectionText}>{spot.description}</Text>
           </View>
 
-          {/* HISTORY */}
+          {/* History */}
           {spot.history && (
-            <View className="bg-white/10 p-5 rounded-2xl">
-              <Text className="text-white text-lg font-semibold mb-2">
-                🏛️ History
-              </Text>
-              <Text className="text-gray-300 leading-relaxed">
-                {spot.history}
-              </Text>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>🏛️ History</Text>
+              <Text style={styles.sectionText}>{spot.history}</Text>
             </View>
           )}
 
-          {/* FUN FACTS */}
+          {/* Fun Facts */}
           {spot.funFacts?.length > 0 && (
-            <View className="bg-white/10 p-5 rounded-2xl">
-              <Text className="text-white text-lg font-semibold mb-3">
-                🎯 Fun Facts
-              </Text>
-
-              {spot.funFacts.map((fact: string, index: number) => (
-                <View key={index} className="flex-row mb-2">
-                  <Text className="text-blue-400 mr-2">•</Text>
-                  <Text className="text-gray-300 flex-1">
-                    {fact}
-                  </Text>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>🎯 Fun Facts</Text>
+              {spot.funFacts.map((fact, index) => (
+                <View key={index} style={styles.factItem}>
+                  <Text style={styles.bullet}>•</Text>
+                  <Text style={styles.factText}>{fact}</Text>
                 </View>
               ))}
             </View>
@@ -159,8 +133,8 @@ export default function SpotDetail() {
         </View>
       </Animated.ScrollView>
 
-      {/* STICKY BOTTOM CTA */}
-      <View className="absolute bottom-0 left-0 right-0 p-5 bg-black/90 border-t border-white/10">
+      {/* Sticky Bottom CTA */}
+      <View style={styles.bottomCTA}>
         <Link
           href={{
             pathname: "/(tabs)/map",
@@ -175,14 +149,10 @@ export default function SpotDetail() {
           <TouchableOpacity activeOpacity={0.85}>
             <LinearGradient
               colors={["#3b82f6", "#1d4ed8"]}
-              className="p-5 rounded-2xl items-center"
+              style={styles.ctaButton}
             >
-              <Text className="text-white font-bold text-lg">
-                📍 Get Directions
-              </Text>
-              <Text className="text-blue-100 text-xs mt-1">
-                Start navigation instantly
-              </Text>
+              <Text style={styles.ctaText}>📍 Get Directions</Text>
+              <Text style={styles.ctaSubText}>Start navigation instantly</Text>
             </LinearGradient>
           </TouchableOpacity>
         </Link>
@@ -190,3 +160,43 @@ export default function SpotDetail() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: "#000" },
+  centered: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#000" },
+  errorText: { color: "#f87171" },
+  headerButtons: {
+    position: "absolute",
+    top: 48,
+    left: 16,
+    right: 16,
+    zIndex: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  headerButton: {
+    backgroundColor: "rgba(0,0,0,0.5)",
+    padding: 12,
+    borderRadius: 999,
+  },
+  headerButtonText: { color: "#fff", fontSize: 16 },
+  heroImage: { width: "100%", height: 384 },
+  gradientOverlay: { position: "absolute", bottom: 0, width: "100%", height: 192 },
+  heroTextContainer: { position: "absolute", bottom: 24, left: 20, right: 20 },
+  heroTitle: { color: "#fff", fontSize: 28, fontWeight: "800" },
+  heroSubtitle: { color: "#d1d5db", fontSize: 14, marginTop: 4 },
+  contentContainer: { backgroundColor: "#000", borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingHorizontal: 20, paddingTop: 24, paddingBottom: 128, gap: 20 },
+  quickInfo: { flexDirection: "row", justifyContent: "space-between", backgroundColor: "rgba(255,255,255,0.1)", padding: 16, borderRadius: 16 },
+  label: { color: "#9ca3af", fontSize: 12 },
+  value: { color: "#fff", fontWeight: "700" },
+  section: { backgroundColor: "rgba(255,255,255,0.1)", padding: 20, borderRadius: 16 },
+  sectionTitle: { color: "#fff", fontSize: 18, fontWeight: "600", marginBottom: 8 },
+  sectionText: { color: "#d1d5db", lineHeight: 20 },
+  factItem: { flexDirection: "row", marginBottom: 8 },
+  bullet: { color: "#3b82f6", marginRight: 8 },
+  factText: { color: "#d1d5db", flex: 1 },
+  bottomCTA: { position: "absolute", bottom: 0, left: 0, right: 0, padding: 20, backgroundColor: "rgba(0,0,0,0.9)", borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.1)" },
+  ctaButton: { padding: 20, borderRadius: 16, alignItems: "center" },
+  ctaText: { color: "#fff", fontWeight: "700", fontSize: 16 },
+  ctaSubText: { color: "#bfdbfe", fontSize: 12, marginTop: 4 },
+});
