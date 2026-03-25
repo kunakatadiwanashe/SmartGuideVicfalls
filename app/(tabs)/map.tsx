@@ -121,7 +121,7 @@ export default function MapScreen() {
         center: { latitude: location.latitude, longitude: location.longitude },
         pitch: 2,
         zoom: 16,
-      }, 1000);
+      }, { duration: 1000 });
     }
   }, [location, followUser]);
 
@@ -132,7 +132,7 @@ export default function MapScreen() {
       center: { latitude: spot.lat, longitude: spot.lng },
       pitch: 8,
       zoom: 17,
-    }, 1000);
+    }, { duration: 1000 });
   }, []);
 
   const recenterToUser = useCallback(() => {
@@ -141,7 +141,7 @@ export default function MapScreen() {
         center: { latitude: location.latitude, longitude: location.longitude },
         pitch: 0,
         zoom: 16,
-      }, 1000);
+      }, { duration: 1000 });
       setFollowUser(true);
     }
   }, [location]);
@@ -480,4 +480,3 @@ const styles = StyleSheet.create({
     color: 'white',
   },
 });
-

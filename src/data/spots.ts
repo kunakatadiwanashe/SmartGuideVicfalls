@@ -1,8 +1,8 @@
-const mainFallsImg = "./main-falls.png";
-const devilsPoolImg = "./devils-pool.png";
-const rainforestWalkImg = "./rainforest-walk.png";
-const vicFallsBridgeImg = "./vic-falls-bridge.png";
-const boilingPotImg = "./boiling-pot.png";
+const mainFallsImg = require("../../assets/main-falls.png");
+const devilsPoolImg = require("../../assets/devils-pool.png");
+const rainforestWalkImg = require("../../assets/rainforest-walk.png");
+const vicFallsBridgeImg = require("../../assets/vic-falls-bridge.png");
+const boilingPotImg = require("../../assets/boiling-pot.png");
 const nationalParkImg = "./national-park.png";
 const zambeziNationalParkImg = "./hero-falls.png";
 const elephantsWalkImg = "./rainforest-walk.png";
@@ -16,7 +16,7 @@ export interface TouristSpot {
   id: string;
   name: string;
   shortName: string;
-  image: string;
+  image: any; // ImageSourcePropType
   lat: number;
   lng: number;
   description: string;
